@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Literary Society Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+    }
+
+   header {
+  background-color: #0f1747;
+  color: #fff;
+  padding: 15px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+header img {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+header h1 small {
+  display: block;
+  font-size: 14px;
+  font-weight: normal;
+  color: #ddd;
+  margin-top: 2px;
+}
+
+
+
+
+    .container {
+      display: flex;
+      height: calc(100vh - 60px);
+      overflow: hidden;
+    }
+
+    .leftbar, .rightbar {
+      width: 220px;
+      padding: 20px;
+      background-color: #d8ecf0;
+      overflow-y: auto;
+    }
+
+    .rightbar {
+      background-color: #6673ae;
+      border-left: 1px solid #ddd;
+    }
+
+    .member, .sidebar-link {
+      padding: 8px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-bottom: 5px;
+      font-size: 20px;
+    }
+
+    .member:hover, .sidebar-link:hover,
+    .member.active, .sidebar-link.active {
+      background-color: #c8e6c9;
+    }
+
+    .content {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    .content h2 {
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 5px;
+    }
+
+    select, input[type="date"], input[type="url"] {
+      width: 100%;
+      padding: 8px;
+      max-width: 400px;
+    }
+
+    .submit-btn {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background-color: #4caf50;
+      color: white;
+      cursor: pointer;
+    }
+
+    .submit-btn:hover {
+      background-color: #45a049;
+    }
+
+    .profile-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: #ffffff;
+      background-image: url('https://cdn-icons-png.flaticon.com/512/149/149071.png');
+      background-size: cover;
+      background-position: center;
+      border: 2px solid #ffffff;
+    }
+
+    .task-item {
+      background: #fff;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-left: 4px solid #2196f3;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .events {
+      margin-top: 30px;
+    }
+
+    .events h3 {
+      font-size: 22px;
+      color: #29127e;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .event-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .event-card {
+      background-color: #fff;
+      border-left: 5px solid #12437e;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 250px;
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+
+    .event-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .event-card h4 {
+      margin-top: 0;
+      font-size: 18px;
+      color: #333;
+      
+    }
+
+    .event-card p {
+      font-size: 20px;
+      color: #555;
+    }
+
+
+  </style>
+</head>
+<body>
+
+<header>
+  <div style="display: flex; align-items: center; gap: 15px;">
+    <!-- Logo Image -->
+    <img src="LS logo.jpeg" alt="Literary Society Logo" style="height: 50px; width: 50px; border-radius: 50%;" />
+
+    <!-- Title and Subtitle -->
+    <div>
+      <h1 style="margin: 0; font-size: 34px;">
+        Literary Society<br>
+        <small style="font-size: 24px; font-weight: normal;">"Voice of the People"</small>
+      </h1>
+    </div>
+  </div>
+
+  <!-- Right-side user and logout -->
+  <div style="display: flex; align-items: center; gap: 20px;">
+    <div class="profile-icon" onclick="goToProfile()" style="cursor: pointer;"></div>
+    <div style="font-weight: bold; font-size: 16px; cursor: pointer;" onclick="goToProfile()">
+      <span id="userName">Loading...</span>
+    </div>
+    <a href="#" onclick="logout()" style="color: white; text-decoration: none;">Logout</a>
+  </div>
+</header>
+
+
+<div class="container">
+  <div class="rightbar">
+    <div class="profile-icon" onclick="goToProfile()" style="cursor: pointer; "></div>
+    <div onclick="goToProfile()" style="margin-bottom: 20px; font-weight: bold; font-size: 25px; cursor: pointer;">
+      <span id="userNameSidebar">Loading...</span>
+    </div>
+
+    <h3>Sections</h3>
+    <div class="sidebar-link" onclick="showSection('infoPanel', this)">About LS</div>
+    <div class="sidebar-link" onclick="showSection('meetSection', this)">Meet Reports</div>
+    <div class="sidebar-link" onclick="showSection('taskSection', this)">Task Updates</div>
+  </div>
+
+  <div class="content">
+    <div id="infoPanel">
+      <h2 style="text-align: center; color: #0f1747;font-size: 30px;font-family: cursive;">Welcome to the LS Family</h2>
+      <div class="about-section">
+        <p> <h1>ABOUT US</h1>
+
+Welcome to the Literary Society, where words breathe life into ideas, and creativity finds a home. In a technical institution, we offer a sanctuary for those who seek more than formulas and codes. At LS, we believe in the power of expression-whether it's through storytelling, art, or intellectual discourse, we give you the stage to share what truly moves you.
+
+As BIT Sindri's premier literature-cum-cultural club, we're not just about hosting events; we create experiences. From captivating performances to socially resonant discussions, our work has earned praise far and wide, even from celebrities.
+
+We also prioritise personal growth, sharpening communication skills and boosting confidence. Whether you're a poet, an artist, or just a fresher looking for a community to grow with, LS is the place to be-where you can extend your limits, and discover new ones.</p>
+      </div>
+
+      <div class="events">
+  <h3>Our Signature Events</h3>
+
+  <div class="event-card">
+    <h4 style="color: #2c28a5;">🎤 DHWANI</h4>
+    <p> It is an exciting open-mic festival that happens once a year and is highly anticipated by everyone. It gives students a chance to express themselves and share their unique ideas and feelings that they might not have shared before. Participants take the stage to showcase their talents through poetry, storytelling, and stand-up comedy, capturing the audience's attention. DHWANI isn't just a simple event; it's a lively display of genuine talent. It brings together inspiring thoughts and celebrates bold self-expression, creating a vibrant atmosphere for all who attend.
+</p>
+  </div>
+
+  <div class="event-card">
+    <h4 style="color: #2c28a5;">✉️ STAMPED</h4>
+    <p> An event filled with excitement and self-expression, where students have the unique chance to put their deepest thoughts into words. Through writing heartfelt letters to their best friends, they can share memories, express gratitude, and capture emotions often left unsaid. It's a space for honesty and reflection, offering each participant a meaningful connection with their closest friends. This experience promises to be unforgettable, leaving everyone with cherished memories and messages they can hold onto for years to come.</p>
+  </div>
+
+  <div class="event-card">
+    <h4 style="color: #2c28a5;">🎬 POP CULTURE TRIVIA</h4>
+    <p>3. This is one of our most cherished quizzes at BIT Sindri! It's the kind of
+
+competition you dreamed of as a child. The preparation is particularly enjoyable, as it encourages you to revisit your favorite movies and TV shows. Our quiz focuses on beloved TV series, films, and more. As you dive into this entertaining and engaging event, you'll also have the opportunity to win fantastic prizes, adding an extra layer of excitement to this fun-filled experience!
+</p>
+  </div>
+
+  <div class="event-card">
+    <h4 style="color: #2c28a5">🗣️ RHETORIX</h4>
+    <p>It is an engaging and competitive debate event that brings together the skilled speakers. Participants tackle challenging topics, showcasing their ability to argue logically, present compelling evidence, and engage in respectful rebuttals. Rhetorix emphasizes critical thinking, quick reasoning, and eloquence, creating an exciting platform for debaters to sharpen their skills and broaden their perspectives. With rounds designed to test both prepared arguments and impromptu responses, Rhetorix encourages debaters to push</p>
+  </div>
+</div>
+
+
+      <div class="poems">
+        <h3>PRAYAG</h3>
+        <div class="task-item"><strong>PRAYAG is not just an event - it's a beautiful series of poetry recitations by the talented members of our Literary Society. Each poem is packed with emotions that will touch your heart and maybe even give you goosebumps! Be it a creation of your own or of your beloved poet, you can express it freely. Ready to feel the magic? Join us on the Literary Society's YouTube channel and dive into this amazing experience.
+
+in Literary Society, BIT Sindri</strong> by Shristi</div>
+        Literary Society,BIT SINDRI
+      </div>
+    </div>
+
+    <div id="meetSection" style="display: none;">
+  <h2>📅 Meet Reports</h2>
+
+  <div class="input-section" style="margin-bottom: 20px;">
+    <label for="meetDate"><strong>Date:</strong></label><br>
+    <input type="date" id="meetDate" />
+
+    <label for="meetDesc"><strong>Description:</strong></label><br>
+    <input type="text" id="meetDesc" placeholder="e.g. Discussed upcoming event" />
+
+    <label for="meetDoc"><strong>Google Docs Link (optional):</strong></label><br>
+    <input type="url" id="meetDoc" placeholder="https://docs.google.com/document/..." />
+
+    <button onclick="addMeetReport()" class="submit-btn">Add Meet Report</button>
+  </div>
+
+  <div id="meetList"></div>
+</div>
+
+
+    <div id="taskSection" style="display: none;">
+      <h2>📌 Task Updates</h2>
+      <div style="margin-bottom: 20px;">
+        <label for="taskDate"><strong>Select Date:</strong></label>
+        <input type="date" id="taskDate" />
+
+        <label for="docLink"><strong>Google Docs Link:</strong></label>
+        <input type="url" id="docLink" placeholder="https://docs.google.com/document/..." />
+
+        <button onclick="addDocLink()" class="submit-btn">Add Task Doc</button>
+      </div>
+
+      <div id="docList"></div>
+    </div>
+
+    <div id="reviewPanel" style="display: none;">
+      <h2>Reviewing: <span id="selectedMember">None</span></h2>
+      <div id="ratingForm"></div>
+      <button class="submit-btn" onclick="submitReview()">Submit Review</button>
+    </div>
+  </div>
+
+  <div class="leftbar">
+    <h3>Members</h3>
+    <div id="memberList"></div>
+  </div>
+</div>
+
+<script>
+  const teamMembers = ["Shristi", "Gaurav", "Ishita", "Rishikant", "Jairam", "Divya", "Sanjay", "Anant", "Bably"];
+  const criteria = ["Communication", "Confidence", "Responsibility", "Collaboration", "Adaptability"];
+  let selectedMember = null;
+
+  function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "lsland.html";
+  }
+
+  async function fetchUserName() {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const response = await fetch("/api/user", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await response.json();
+      document.getElementById("userName").textContent = data.name;
+      document.getElementById("userNameSidebar").textContent = data.name;
+    } catch (error) {
+      alert("Please login again.");
+      logout();
+    }
+  }
+
+  function goToProfile() {
+    window.location.href = "profile.html";
+  }
+
+  function showSection(id, element) {
+    ["infoPanel", "meetSection", "taskSection", "reviewPanel"].forEach(s => {
+      document.getElementById(s).style.display = "none";
+    });
+    document.getElementById(id).style.display = "block";
+
+    document.querySelectorAll(".sidebar-link").forEach(el => el.classList.remove("active"));
+    element.classList.add("active");
+
+    if (id === 'taskSection') fetchDocs();
+  }
+
+  function renderRatingFields() {
+    const container = document.getElementById("ratingForm");
+    container.innerHTML = "";
+    criteria.forEach(criterion => {
+      const label = document.createElement("label");
+      label.textContent = criterion;
+      const select = document.createElement("select");
+      select.name = criterion.toLowerCase();
+      select.innerHTML = '<option value="">Select</option>' +
+        Array.from({ length: 10 }, (_, i) => `<option value="${i + 1}">${i + 1}</option>`).join('');
+      container.appendChild(label);
+      container.appendChild(select);
+    });
+  }
+
+  async function submitReview() {
+    if (!selectedMember) return alert("Select a member.");
+
+    const ratings = {};
+    let valid = true;
+
+    criteria.forEach(criterion => {
+      const val = document.querySelector(`select[name="${criterion.toLowerCase()}"]`).value;
+      if (!val) valid = false;
+      ratings[criterion.toLowerCase()] = Number(val);
+    });
+
+    if (!valid) return alert("Please rate all criteria.");
+
+    const token = localStorage.getItem("token");
+    const response = await fetch("/api/rate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ to: selectedMember, ratings })
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      const successDiv = document.createElement("div");
+successDiv.textContent = `✅ Review for ${selectedMember} submitted!`;
+successDiv.style.backgroundColor = "#d4edda";
+successDiv.style.color = "#155724";
+successDiv.style.padding = "10px";
+successDiv.style.border = "1px solid #c3e6cb";
+successDiv.style.marginTop = "15px";
+successDiv.style.borderRadius = "5px";
+document.getElementById("reviewPanel").appendChild(successDiv);
+
+setTimeout(() => {
+  successDiv.remove();
+}, 3000);
+
+    } else {
+      alert(result.message || "Error");
+    }
+  }
+
+  // ✅ Render members list once
+  function renderMembers() {
+    const container = document.getElementById("memberList");
+    container.innerHTML = "";
+
+    teamMembers.forEach(name => {
+      const div = document.createElement("div");
+      div.textContent = name;
+      div.className = "member";
+      div.onclick = () => {
+        selectedMember = name;
+        document.getElementById("selectedMember").textContent = name;
+        showSection("reviewPanel", div);
+        renderRatingFields();
+      };
+      container.appendChild(div);
+    });
+  }
+
+  async function fetchDocs() {
+    const token = localStorage.getItem("token");
+    const docList = document.getElementById("docList");
+    try {
+      const res = await fetch("/api/task-docs", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const docs = await res.json();
+      docList.innerHTML = docs.length
+        ? docs.map(doc => {
+          const date = new Date(doc.date).toLocaleDateString();
+          return `<div class="task-item"><strong>${date}:</strong> <a href="${doc.link}" target="_blank">${doc.link}</a></div>`;
+        }).join('')
+        : "<p>No task docs uploaded yet.</p>";
+    } catch (err) {
+      console.error("Error loading docs:", err);
+      docList.innerHTML = "<p>Error fetching task docs.</p>";
+    }
+  }
+
+  async function addDocLink() {
+    const date = document.getElementById("taskDate").value;
+    const link = document.getElementById("docLink").value;
+    const token = localStorage.getItem("token");
+
+    if (!date || !link) return alert("Fill both fields.");
+
+    const res = await fetch("/api/task-docs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ date, link })
+    });
+
+    const result = await res.json();
+    if (res.ok) {
+      alert("✅ Document added.");
+      fetchDocs();
+    } else {
+      alert(result.message || "Error adding document.");
+    }
+  }
+
+  async function fetchMeetReports() {
+    const token = localStorage.getItem("token");
+    const meetList = document.getElementById("meetList");
+
+    try {
+      const res = await fetch("/api/meet-reports", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      const reports = await res.json();
+      meetList.innerHTML = "";
+
+      if (!reports.length) {
+        meetList.innerHTML = "<p>No meet reports uploaded yet.</p>";
+      } else {
+        reports.forEach(report => {
+          const date = new Date(report.date).toLocaleDateString();
+          const div = document.createElement("div");
+          div.className = "task-item";
+
+          let content = `<strong>📅 ${date}:</strong> ${report.description}`;
+          if (report.docLink) {
+            content += `<br><a href="${report.docLink}" target="_blank">View Doc</a>`;
+          }
+
+          div.innerHTML = content;
+          meetList.appendChild(div);
+        });
+      }
+    } catch (err) {
+      console.error("Meet reports fetch error:", err);
+      document.getElementById("meetList").innerHTML = "<p>❌ Failed to load reports.</p>";
+    }
+  }
+
+  async function addMeetReport() {
+    const date = document.getElementById("meetDate").value;
+    const description = document.getElementById("meetDesc").value;
+    const docLink = document.getElementById("meetDoc").value;
+    const token = localStorage.getItem("token");
+
+    if (!date || !description) {
+      alert("Please fill in both date and description.");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/meet-reports", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ date, description, docLink })
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        alert("✅ Meet report added!");
+        fetchMeetReports(); // refresh list
+        document.getElementById("meetDate").value = "";
+        document.getElementById("meetDesc").value = "";
+        document.getElementById("meetDoc").value = "";
+      } else {
+        alert(result.message || "❌ Failed to add meet report.");
+      }
+    } catch (err) {
+      console.error("Add meet report error:", err);
+      alert("❌ Error adding meet report.");
+    }
+  }
+
+  // ✅ Initialize on page load
+  fetchUserName();
+  renderMembers();
+</script>
+
+</body>
+</html>

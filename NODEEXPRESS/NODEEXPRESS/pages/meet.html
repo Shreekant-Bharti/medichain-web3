@@ -1,0 +1,106 @@
+<h2>📋 Meet Reports</h2>
+
+<div class="input-section" style="margin-bottom: 20px;">
+  <label for="meetDate"><strong>Date:</strong></label><br>
+  <input type="date" id="meetDate" />
+
+  <label for="meetDesc"><strong>Description:</strong></label><br>
+  <input type="text" id="meetDesc" placeholder="e.g. Discussed upcoming event" />
+
+  <label for="meetDoc"><strong>Google Docs Link (optional):</strong></label><br>
+  <input type="url" id="meetDoc" placeholder="https://docs.google.com/document/..." />
+
+  <button onclick="addMeetReport()" class="submit-btn">Add Meet Report</button>
+</div>
+
+<div id="meetList"></div>
+
+<script>
+  const token = localStorage.getItem("token");
+  const meetList = document.getElementById("meetList");
+
+  if (!token) {
+    alert("You are not logged in. Redirecting to login page...");
+    window.location.href = "/login.html";
+  }
+
+  async function fetchMeetReports() {
+    try {
+      const response = await fetch('/api/meet-reports', {
+        headers: {
+          'Authorization': 'Bearer ' + token
+        }
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch meet reports.");
+      const reports = await response.json();
+
+      meetList.innerHTML = "";
+
+      if (!reports.length) {
+        meetList.innerHTML = "<p>No meet reports uploaded yet.</p>";
+        return;
+      }
+
+      reports.forEach(report => {
+        const formattedDate = new Date(report.date).toLocaleDateString();
+        const div = document.createElement("div");
+        div.className = "task-item";
+
+        div.innerHTML = `
+          <strong>📅 ${formattedDate}:</strong> ${report.description}
+          ${report.docLink ? `<br><a href="${report.docLink}" target="_blank">📄 View Google Doc</a>` : ""}
+        `;
+
+        meetList.appendChild(div);
+      });
+
+    } catch (err) {
+      console.error("Fetch error:", err);
+      meetList.innerHTML = "<p>❌ Error loading meet reports</p>";
+    }
+  }
+
+  async function addMeetReport() {
+    const date = document.getElementById("meetDate").value;
+    const description = document.getElementById("meetDesc").value;
+    const docLink = document.getElementById("meetDoc").value;
+
+    if (!date || !description) {
+      alert("Please fill both the date and description.");
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/meet-reports', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({ date, description, docLink })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        alert(result.message || "Failed to save");
+        return;
+      }
+
+      alert("✅ Meet report uploaded successfully.");
+      fetchMeetReports();
+
+      // Clear inputs
+      document.getElementById("meetDate").value = "";
+      document.getElementById("meetDesc").value = "";
+      document.getElementById("meetDoc").value = "";
+
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert("❌ Failed to upload meet report.");
+    }
+  }
+
+  fetchMeetReports();
+</script>

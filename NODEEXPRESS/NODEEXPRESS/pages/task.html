@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Task Updates</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #7e1212;
+    }
+
+    .input-section {
+      margin-bottom: 30px;
+    }
+
+    input[type="date"],
+    input[type="url"] {
+      padding: 8px;
+      margin: 10px 0;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    button {
+      padding: 8px 16px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #388e3c;
+    }
+
+    .doc-entry {
+      background-color: #f8f8f8;
+      padding: 10px 15px;
+      margin-top: 10px;
+      border-left: 4px solid #2196f3;
+      border-radius: 4px;
+    }
+
+    .doc-entry a {
+      color: #1a73e8;
+      text-decoration: none;
+    }
+
+    .doc-entry a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📌 Task Updates</h1>
+
+  <div class="input-section">
+    <label for="taskDate"><strong>Select Date:</strong></label><br>
+    <input type="date" id="taskDate" />
+
+    <label for="docLink"><strong>Google Docs Link:</strong></label><br>
+    <input type="url" id="docLink" placeholder="https://docs.google.com/document/..." />
+
+    <button id="addBtn">Add Task Doc</button>
+  </div>
+
+  <div id="docList">
+    <!-- Uploaded docs will appear here -->
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const token = localStorage.getItem("token");
+      const docList = document.getElementById("docList");
+
+      if (!token) {
+        alert("You are not logged in. Redirecting to login page...");
+        window.location.href = "/login.html";
+        return;
+      }
+
+      async function fetchDocs() {
+        try {
+          const response = await fetch('/api/task-docs', {
+            headers: {
+              'Authorization': 'Bearer ' + token
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch task docs.");
+          }
+
+          const docs = await response.json();
+          docList.innerHTML = "";
+
+          if (!docs.length) {
+            docList.innerHTML = "<p>No task docs uploaded yet.</p>";
+          } else {
+            docs.forEach(doc => {
+              const formattedDate = new Date(doc.date).toLocaleDateString();
+              const div = document.createElement("div");
+              div.className = "doc-entry";
+              div.innerHTML = `<strong>${formattedDate}:</strong> <a href="${doc.link}" target="_blank">${doc.link}</a>`;
+              docList.appendChild(div);
+            });
+          }
+        } catch (err) {
+          console.error("Fetch error:", err);
+          docList.innerHTML = "<p>❌ Error loading documents</p>";
+        }
+      }
+
+      async function addDocLink() {
+        const date = document.getElementById("taskDate").value;
+        const link = document.getElementById("docLink").value;
+
+        console.log("Sending:", { date, link });
+
+        if (!date || !link) {
+          alert("Please fill both the date and the link.");
+          return;
+        }
+
+        try {
+          const response = await fetch('/api/task-docs', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({ date, link })
+          });
+
+          const result = await response.json();
+          console.log("Server response:", result);
+
+          if (!response.ok) {
+            alert(result.message || "Failed to save");
+          } else {
+            alert(result.message || "Task document uploaded");
+            fetchDocs(); // Refresh the list
+          }
+
+          document.getElementById("taskDate").value = "";
+          document.getElementById("docLink").value = "";
+
+        } catch (err) {
+          console.error("Upload error:", err);
+          alert("❌ Failed to upload task doc.");
+        }
+      }
+
+      document.getElementById("addBtn").addEventListener("click", addDocLink);
+      fetchDocs();
+    });
+  </script>
+</body>
+</html>

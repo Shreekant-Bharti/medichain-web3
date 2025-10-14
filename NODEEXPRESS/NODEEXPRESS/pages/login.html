@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login - User Auth</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #c7e8e8;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .form-box {
+      margin: 20px auto;
+      padding: 25px;
+      background: rgb(164, 216, 221);
+      width: 320px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: rgb(44, 42, 165);
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: darkred;
+    }
+
+    a {
+      text-decoration: none;
+      color: rgb(0, 0, 0);
+      display: block;
+      margin-top: 10px;
+    }
+
+    #message {
+      font-weight: bold;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Login</h1>
+  <div class="form-box">
+    <form id="login-form">
+      <input type="email" name="email" placeholder="Email" required />
+      <input type="password" name="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+      <a href="/register.html">Don't have an account? Create one</a>
+    </form>
+    <div id="message"></div>
+  </div>
+
+  <script>
+  const msg = document.getElementById('message');
+
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const form = new FormData(e.target);
+    const data = Object.fromEntries(form.entries());
+
+    try {
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      const result = await res.json();
+
+      if (res.ok && result.token) {
+        localStorage.setItem("token", result.token);  // ✅ Store token
+        msg.textContent = "Login successful. Redirecting...";
+        msg.style.color = "green";
+        setTimeout(() => {
+          window.location.href = "/dashboard.html";   // ✅ Redirect
+        }, 1000);
+      } else {
+        msg.textContent = result.message || "Login failed.";
+        msg.style.color = "red";
+      }
+    } catch {
+      msg.textContent = "Something went wrong.";
+      msg.style.color = "red";
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Register - User Auth</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #c7e8e8;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .form-box {
+      margin: 20px auto;
+      padding: 25px;
+      background: white;
+      width: 350px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      margin-right: 2px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: rgb(79, 42, 165);
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: darkred;
+    }
+
+    a {
+      text-decoration: none;
+      color: rgb(0, 0, 0);
+      display: block;
+      margin-top: 10px;
+    }
+
+    #message {
+      font-weight: bold;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Register</h1>
+  <div class="form-box">
+    <form id="register-form">
+      <input type="text" name="name" placeholder="Name" required />
+      <input type="email" name="email" placeholder="Email" required />
+      <input type="password" name="password" placeholder="Password" required />
+      <button type="submit">Register</button>
+      <a href="/login.html">Already have an account? Log in</a>
+    </form>
+    <div id="message"></div>
+  </div>
+
+ <script>
+  const msg = document.getElementById('message');
+
+  document.getElementById('register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = new FormData(e.target);
+    const data = Object.fromEntries(form.entries());
+
+    try {
+      const res = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      const result = await res.json();
+
+      if (res.status === 400 && result.message?.includes('already')) {
+        msg.textContent = "Already registered. Please log in.";
+        msg.style.color = "red";
+      } else if (res.ok && result.token) {
+        // ✅ Save token and redirect
+        localStorage.setItem('token', result.token);
+        msg.textContent = result.message;
+        msg.style.color = "green";
+        setTimeout(() => {
+          window.location.href = "/dashboard.html";
+        }, 1000);
+      } else {
+        msg.textContent = result.message || "Registration failed.";
+        msg.style.color = "red";
+      }
+    } catch (err) {
+      console.error("Signup error:", err);
+      msg.textContent = "Something went wrong. Please try again.";
+      msg.style.color = "red";
+    }
+  });
+  document.getElementById('register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = new FormData(e.target);
+    const data = Object.fromEntries(form.entries());
+
+    const res = await fetch('/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+
+    if (res.ok && result.token) {
+      localStorage.setItem("token", result.token);  // ✅ Save token
+      window.location.href = "/dashboard.html";     // ✅ Redirect to dashboard
+    } else {
+      alert(result.message || "Registration failed");
+    }
+  });
+</script>
+
+</body>
+</html>

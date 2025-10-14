@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LS Member Portal | BIT Sindri</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #fdfdfd;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    header {
+      background-color: #270f63;
+      color: white;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 80px 20px;
+      background: linear-gradient(to right, #7978c3, #9a97a2);
+      color: white;
+    }
+
+    .hero h2 {
+      font-size: 40px;
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .section {
+      padding: 60px 20px;
+      max-width: 1000px;
+      margin: auto;
+      text-align: center;
+    }
+
+    .section h3 {
+      font-size: 30px;
+      color: #24127e;
+      margin-bottom: 30px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    }
+
+    .card h4 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #222;
+    }
+
+    .card p {
+      font-size: 15px;
+      color: #555;
+    }
+
+    .login-section {
+      padding: 60px 20px;
+      text-align: center;
+      background: #f0f0f0;
+    }
+
+    .login-section input[type="password"] {
+      padding: 10px 15px;
+      font-size: 16px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .login-section button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #12227e;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .login-section button:hover {
+      background-color: #0f0f5a;
+    }
+
+    footer {
+      background: #2e2e2e;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+     <div style="display: flex; align-items: center; gap: 15px;">
+    <!-- Logo Image -->
+    <img src="LS logo.jpeg" alt="Literary Society Logo" style="height: 50px; width: 50px; border-radius: 50%;" />
+     <h1>Literary Society | BIT Sindri</h1> </div>
+   
+    <div>Member Portal</div>
+  </header>
+  
+
+  <section class="hero">
+    <h2>Welcome to LS Member Dashboard</h2>
+    <p>This space is exclusively for members of the Literary Society to reflect, review, and grow. Your voice matters here.</p>
+  </section>
+<section class="login-section">
+    <h3>🔒 Members Only</h3>
+    <p>Enter the common password to access the internal dashboard:</p>
+    <input type="password" id="accessPassword" placeholder="Enter Password" />
+    <br>
+    <button onclick="checkPassword()">Enter</button>
+  </section>
+  <section class="section">
+    <h3>Core Modules</h3>
+    <div class="card-grid">
+      <div class="card">
+        <h4>📄 Meet Reports</h4>
+        <p>Access and document reports of all Literary Society meetings in one place.</p>
+      </div>
+      <div class="card">
+        <h4>✅ Task Tracker</h4>
+        <p>Stay updated with ongoing and completed team tasks, with shared doc links.</p>
+      </div>
+      <div class="card">
+        <h4>🌱 Self Reviews</h4>
+        <p>Reflect on your collaboration, communication, and adaptability with peer reviews.</p>
+      </div>
+    </div>
+  </section>
+
+  
+
+  <footer>
+    &copy; 2025 Literary Society, BIT Sindri — Empowering Growth & Expression
+  </footer>
+
+  <script>
+    function checkPassword() {
+      const input = document.getElementById("accessPassword").value;
+      const commonPassword = "ls2025bit"; // you can change this
+      if (input === commonPassword) {
+        window.location.href = "login.html";
+      } else {
+        alert("Incorrect password. Please try again.");
+      }
+    }
+  </script>
+</body>
+</html>
