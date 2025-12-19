@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd blockchain/frontend && npm install && npm run build",
+  "outputDirectory": "blockchain/frontend/dist",
+  "installCommand": "cd blockchain/frontend && npm install",
+  "framework": null,
+  "devCommand": "cd blockchain/frontend && npm run dev"
+}
